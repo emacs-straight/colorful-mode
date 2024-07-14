@@ -1,0 +1,12 @@
+assets
+test
+.project
+.elpaignore
+CONTRIBUITING.org
+COPYING
+README.org
+
+.eask/
+dist/
+
+/.github
