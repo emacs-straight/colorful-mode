@@ -54,10 +54,12 @@ buffer in real time and in a user friendly way based/inspired on
   • `colorful-allow-mouse-clicks (default: t)' If non-nil, allow using
     mouse buttons for change color.
   • `colorful-use-prefix (default: nil)' If non-nil, use prefix for
-    preview color instead highlight them.  *NOTE: css derived modes by
-    default colorize rgb and hex colors, this may interfere with
-    colorful prefix, you can disable this setting css-fontify-colors to
-    nil*
+    preview color instead highlight them.
+  ┌────
+  │ ⛔ WARNING: CSS-DERIVED MODES COLORIZE RGB AND HEX COLORS OUT THE BOX,
+  │ THIS MAY INTERFERE WITH COLORFUL PREFIX, YOU CAN DISABLE THIS SETTING
+  │ `css-fontify-colors' TO nil
+  └────
   • `colorful-prefix-string (default: "●")' String to be used in
     highlights.  Only relevant if `colorful-use-prefix' is non-nil.
   • `colorful-prefix-alignment (default: 'left)' The position to put
