@@ -435,7 +435,7 @@ If ALPHA is non-nil then use `#RRGGBBAA' format"
       (apply #'color-rgb-to-hex (color-hsl-to-rgb h s l))))
 
 (defun colorful--hex-to-name (hex)
-  "Return HEX as Emacs color name."
+  "Return HEX as color name."
   (catch 'name
     (dolist (color-list color-name-rgb-alist)
       (if (equal (cdr color-list) (color-values hex))
@@ -467,12 +467,16 @@ BEG is the position to check for the overlay."
 ;;;; User Interactive Functions
 
 (defun colorful-convert-and-change-color (&optional beg end)
-  "Convert color to other format and replace color at point or active mark.
-If mark is active, convert colors in mark."
-  (interactive "*r")
-  (if mark-active
+  "Convert color to other format and replace color at point or active region.
+If region is active, convert colors in mark."
+  (interactive
+   (progn (barf-if-buffer-read-only)
+          (if (use-region-p)
+              (list (region-beginning) (region-end)))))
+
+  (if (and beg end)
       (let* ((choices '(("Hexadecimal color format" . hex)
-                        ("Emacs color name" . name)))
+                        ("Color name" . name)))
              ;; Start prompt.
              (choice (alist-get
                       (completing-read "Change colors in region: " choices nil t nil nil)
@@ -554,7 +558,7 @@ If mark is active, convert colors in mark."
          (color (or color (buffer-substring-no-properties beg end)))
          (prompt (format prompt color))
          (choices '(("Hexadecimal color format" . hex)
-                    ("Emacs color name" . name)))
+                    ("Color name" . name)))
          ;; Get choice.
          (choice (alist-get
                   (completing-read prompt choices nil t nil nil)
@@ -679,10 +683,10 @@ REGEXP must have a group that contains the color value."
      (when (re-search-backward ,regexp nil t)
        ;; Get color value from colorful overlay.
        ;; if not color value found, use the one from REGEXP 1st group.
-       (setq color (or (ignore-errors
-                         (overlay-get (colorful--find-overlay
-                                       (match-beginning 1))
-                                      'colorful--overlay-color))
+       (setq color (or (and (colorful--find-overlay (match-beginning 1)) ; Ensure overlay exists.
+                            (overlay-get (colorful--find-overlay
+                                          (match-beginning 1))
+                                         'colorful--overlay-color))
                        (match-string-no-properties 1))))))
 
 (defun colorful--colorize (kind &optional match)
@@ -755,15 +759,15 @@ REGEXP must have a group that contains the color value."
            ;; Find whole buffer for last @define-color match-1 found
            ;; and get its color value.
            (colorful--get-css-variable-color
-            (rx (seq "@define_color"
-                     (one-or-more space)
-                     (literal match-2)
-                     (one-or-more space)
-                     (group (opt "#") (one-or-more (any "0-9A-Za-z")))))))
+             (rx (seq "@define_color"
+                      (one-or-more space)
+                      (literal match-2)
+                      (one-or-more space)
+                      (group (opt "#") (one-or-more (any "0-9A-Za-z")))))))
           ((string= match-1 "var")
            (colorful--get-css-variable-color
-            (rx (seq (literal match-2) ":" (zero-or-more space)
-                     (group (opt "#") (one-or-more (any "0-9A-Za-z"))))))))))
+             (rx (seq (literal match-2) ":" (zero-or-more space)
+                      (group (opt "#") (one-or-more (any "0-9A-Za-z"))))))))))
 
       ;; Ensure that string is a valid color and that string is non-nil
       (if (and color (color-defined-p color))
