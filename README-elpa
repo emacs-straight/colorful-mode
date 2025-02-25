@@ -189,19 +189,51 @@ buffer in real time and in a user friendly way based/inspired on
   buffer with `M-x colorful-mode', if want enable it globally without
   using hooks then you can do `M-x global-colorful-mode'
 
-  Or if you prefer using `use-package' macro:
+
+6 Configuration ⚙️
+═════════════════
+
+  Example /(Personal)/ configuration for your `init.el':
+
   ┌────
-  │ 
   │ (use-package colorful-mode
-  │   :ensure t ; Optional
-  │   :hook (prog-mode text-mode)
-  │   ;; :config (global-colorful-mode) ; Enable it globally
-  │   ...)
-  │ 
+  │   ;; :diminish
+  │   ;; :ensure t ; Optional
+  │   :custom
+  │   (colorful-use-prefix t)
+  │   (colorful-only-strings 'only-prog)
+  │   (css-fontify-colors nil)
+  │   :config
+  │   (global-colorful-mode t)
+  │   (add-to-list 'global-colorful-modes 'helpful-mode))
   └────
 
 
-6 How does it compare to `rainbow-mode' or built-in `css fontify colors'?
+6.1 Disable colorful in regions
+───────────────────────────────
+
+  If you want to disable colorful at region this hack may be useful for
+  you:
+
+  ┌────
+  │ (add-hook 'post-command-hook
+  │ 	  (lambda ()
+  │ 	    "delete colorful overlay on active mark"
+  │ 	    (when-let (colorful-mode
+  │ 		       (beg (region-beginning))
+  │ 		       (end (region-end)))
+  │ 	      (if (use-region-p)
+  │ 		  (dolist (ov (overlays-in beg end))
+  │ 		    (when (overlay-get ov 'colorful--overlay)
+  │ 		      (remove-overlays (overlay-start ov) (overlay-end ov)
+  │ 				       'colorful--overlay t)))
+  │ 		(save-excursion
+  │ 		  (font-lock-fontify-region beg end)))))
+  │ 	  nil t)
+  └────
+
+
+7 How does it compare to `rainbow-mode' or built-in `css fontify colors'?
 ═════════════════════════════════════════════════════════════════════════
 
   `colorful-mode' improves `rainbow-mode' and `css-fontify-colors' in
@@ -242,7 +274,7 @@ buffer in real time and in a user friendly way based/inspired on
   prefix strings and more features you can use `colorful-mode.el'.
 
 
-7 [How to Contribute]
+8 [How to Contribute]
 ═════════════════════
 
   colorful-mode is part of GNU ELPA, if you want send patches you will
