@@ -9,7 +9,7 @@
 ;; Package-Requires: ((emacs "28.1") (compat "30.0.2.0"))
 ;; Homepage: https://github.com/DevelopmentCool2449/colorful-mode
 ;; Keywords: faces, tools, matching, convenience
-;; Version: 1.2.1
+;; Version: 1.2.3
 
 ;; This file is part of GNU Emacs.
 
@@ -361,7 +361,7 @@ Only relevant if `colorful-use-prefix' is non-nil."
 
 (defcustom colorful-prefix-alignment 'left
   "The position to place the prefix string.
-The value can be 'left or 'right.
+The value can be `left' or `right'.
 Only relevant if `colorful-use-prefix' is non-nil."
   :type '(choice (const :tag "Left" left)
                  (const :tag "Right" right)))
@@ -384,7 +384,7 @@ specification (#RRGGBB[AA]) and can make them inaccurate."
 
 (defcustom colorful-only-strings nil
   "If non-nil, colorful will only highlight colors inside strings.
-If set to 'only-prog, only highlight colors in strings if the current
+If set to `only-prog', only highlight colors in strings if the current
 major mode is derived from `prog-mode'."
   :type '(choice boolean (const :tag "Only in prog-modes" only-prog)))
 
@@ -393,6 +393,12 @@ major mode is derived from `prog-mode'."
 
 (defvar-local colorful-color-keywords nil
   "Font-lock colors keyword to highlight.")
+
+(defvar colorful--color-names-regexp
+  (regexp-opt (append
+               (defined-colors)
+               (mapcar #'car colorful-html-colors-alist))
+              'symbols))
 
 
 ;;;; Internal Functions
@@ -885,12 +891,7 @@ This is intended to be used with `colorful-extra-color-keyword-functions'."
 (defvar colorful-color-name-font-lock-keywords
   `((,(lambda (limit)
         (let ((case-fold-search t))
-          (re-search-forward
-           (regexp-opt (append
-                        (defined-colors)
-                        (mapcar #'car colorful-html-colors-alist))
-                       'symbols)
-           limit t)))
+          (re-search-forward colorful--color-names-regexp limit t)))
      (0 (colorful--colorize 'color-name))))
   "Font-lock keywords to add color names.")
 
