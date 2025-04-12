@@ -234,7 +234,7 @@ buffer in real time and in a user friendly way based/inspired on
   │ 	      ;; the region is.
   │ 		  (dolist (ov (overlays-in beg end))
   │ 		    (when (overlay-get ov 'colorful--overlay)
-  │ 		      (remove-overlays (overlay-start ov) (overlay-end ov) 'colorful--overlay t))))))
+  │ 		      (delete-overlay ov))))))
   │ 
   │ (add-hook 'deactivate-mark-hook
   │ 	  (lambda ()
