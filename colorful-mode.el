@@ -6,7 +6,7 @@
 ;; Maintainer: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;;             Elias G. Perez <eg642616@gmail.com>
 ;; Created: 2024-04-10
-;; Package-Requires: ((emacs "28.1") (compat "30"))
+;; Package-Requires: ((emacs "28.1") (compat "30.1.0.0"))
 ;; Homepage: https://github.com/DevelopmentCool2449/colorful-mode
 ;; Keywords: faces, tools, matching, convenience
 ;; Version: 1.2.3
@@ -333,8 +333,11 @@ If PERCENTAGE is above 100%, it is converted to 100."
     (string-to-number percentage)))
 
 (defun colorful--short-hex (hex)
-  "Convert a 12-digit hexadecimal color form to a 6-digit form.
-HEX should be a string in the format `#RRRRGGGGBBBB' (12-digit form)."
+  "Convert a 12-digit hexadecimal color form to a 6-digit (#RRGGBB) form.
+HEX should be a string in the format `#RRRRGGGGBBBB' (12-digit form).
+
+The conversion is controlled by `colorful-short-hex-conversions'.  If
+`colorful-short-hex-conversions' is set to nil, then just return HEX."
   (if colorful-short-hex-conversions
       (let ((r (substring hex 1 5))
             (g (substring hex 5 9))
@@ -360,18 +363,8 @@ HEX should be a string in the format `#RRRRGGGGBBBB' (12-digit form)."
 (defun colorful--oklab-to-hex (l a b)
   "Convert OKLab color (L, A, B) to HEX format.
 L, A and B must be floats divided by 100."
-  (if-let* (((functionp 'color-oklab-to-srgb))
-            (rgb (mapcar #'color-clamp (color-oklab-to-srgb l a b))))
-      (apply #'color-rgb-to-hex rgb)
-    (let* ((ll (expt (+ (* 1.0 l) (* 0.39633779 a) (* 0.21580376 b)) 3))
-           (mm (expt (+ (* 1.00000001 l) (* -0.10556134 a) (* -0.06385417 b)) 3))
-           (ss (expt (+ (* 1.00000005 l) (* -0.08948418 a) (* -1.29148554 b)) 3))
-           (x (+ (* ll 1.22701385) (* mm -0.55779998) (* ss 0.28125615)))
-           (y (+ (* ll -0.04058018) (* mm 1.11225687) (* ss -0.07167668)))
-           (z (+ (* ll -0.07638128) (* mm -0.42148198) (* ss 1.58616322)))
-           (srgb (color-xyz-to-srgb x y z))
-           (rgb (mapcar #'color-clamp srgb)))
-      (apply #'color-rgb-to-hex rgb))))
+  (let ((rgb (mapcar #'color-clamp (color-oklab-to-srgb l a b))))
+    (apply #'color-rgb-to-hex rgb)))
 
 (defun colorful--oklch-to-hex (l c h)
   "Convert OKLCH color (L, C, H) to HEX format.
@@ -389,7 +382,7 @@ H must be a float not divided."
 (defun colorful--name-to-hex (name)
   "Return color NAME as hex color format."
   (if (color-defined-p name)
-      name
+      (apply #'format "#%04x%04x%04x" (color-values name))
     (cdr (assoc-string name colorful-html-colors-alist t))))
 
 ;;;;; Overlay functions
@@ -523,30 +516,21 @@ CHOICE is used for get kind of color."
          (end (overlay-end ov))
          (kind (overlay-get ov 'colorful--overlay-kind))
          (color-value (overlay-get ov 'colorful--overlay-color)))
-
     (pcase choice ; Check and convert color to any of the options:
       ('hex ; COLOR to HEX
        (pcase kind
          ('hex "%s is already a Hex color. Try again: ")
-         ;; Is COLOR a Name?
-         ('color-name (list (colorful--short-hex color-value) beg end))
-         ;; Is COLOR a CSS rgb?
-         ('css-rgb (list (colorful--short-hex color-value) beg end))
-         ;; Is COLOR a HSL?
-         ('css-hsl (list (colorful--short-hex color-value) beg end))))
+         ((or 'css-rgb 'css-hsl 'color-name)
+          (list
+           (colorful--short-hex
+            (if (eq kind 'color-name)
+                (colorful--name-to-hex color-value)
+              color-value))
+           beg end))))
       ('name ; COLOR to NAME
        (pcase kind
          ('color-name "%s is already a color name. Try again: ")
-         ;; Is COLOR a Hex?
-         ('hex
-          (if-let* ((color (colorful--hex-to-name color-value)))
-              (list color beg end)))
-         ;; Is COLOR a CSS rgb?
-         ('css-rgb
-          (if-let* ((color (colorful--hex-to-name color-value)))
-              (list color beg end)))
-         ;; Is COLOR a HSL?
-         ('css-hsl
+         ((or 'hex 'css-rgb 'css-hsl)
           (if-let* ((color (colorful--hex-to-name color-value)))
               (list color beg end))))))))
 
@@ -567,10 +551,7 @@ from `readable-foreground-color'."
     ;; Set kind tag
     (overlay-put ov 'colorful--overlay-kind kind)
     ;; Set color value as tag
-    (overlay-put ov 'colorful--overlay-color
-                 (if (eq 'color-name kind)
-                     (colorful--name-to-hex color)
-                   color))
+    (overlay-put ov 'colorful--overlay-color color)
 
     ;; Enable auto deletion.
     (overlay-put ov 'evaporate t)
@@ -647,7 +628,10 @@ BEG and END are color match positions."
                color (string-replace "0x" "#" color)))
 
         ('color-name
-         (setq color (colorful--name-to-hex color)))
+         (setq color
+               (if (color-defined-p color)
+                   color
+                 (cdr (assoc-string color colorful-html-colors-alist t)))))
 
         ('latex-rgb
          (setq color
