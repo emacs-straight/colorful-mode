@@ -9,7 +9,7 @@
 ;; Package-Requires: ((emacs "28.1") (compat "30.1.0.0"))
 ;; Homepage: https://github.com/DevelopmentCool2449/colorful-mode
 ;; Keywords: faces, tools, matching, convenience
-;; Version: 1.2.3
+;; Version: 1.2.4
 
 ;; This file is part of GNU Emacs.
 
@@ -297,7 +297,7 @@ In case colorful breaks a buffer, such as a buffer
 derived from `help-mode', this option can be useful for you."
   :type '(repeat string))
 
-;; (make-obsolete-variable colorful-excluded-buffers nil "1.2.4")
+(make-obsolete-variable 'colorful-excluded-buffers nil "1.2.4")
 
 (defcustom colorful-short-hex-conversions t
   "If non-nil, colorful will converted long hex colors to \"#RRGGBB\" format.
@@ -407,8 +407,7 @@ BEG is the position to check for the overlay."
 ;;;; User Interactive Functions
 
 (defun colorful-convert-and-change-color (&optional beg end)
-  "Convert color to other format and replace color at point or active region.
-If region is active, convert colors in mark."
+  "Convert color at point or colors in region to another format."
   (interactive
    (progn (barf-if-buffer-read-only)
           (if (use-region-p)
@@ -459,7 +458,7 @@ If region is active, convert colors in mark."
       (user-error "No color found"))))
 
 (defun colorful-convert-and-copy-color ()
-  "Convert color and copy it at point."
+  "Convert color at point to another format and copy it to the kill ring."
   (interactive)
   (if-let* ((colorful-ov (colorful--find-overlay)) ; Find colorful overlay tag at point/cursor.
             ;; Start prompt for color change and get new color.
@@ -475,7 +474,7 @@ If region is active, convert colors in mark."
     (user-error "No color found")))
 
 (defun colorful-change-or-copy-color ()
-  "Change or copy color to a converted format at point."
+  "Change or copy color at point to another format."
   (interactive)
   (let* ((prompt "Please type an option: ")
          (choices '(("Convert and change color." . convert)
