@@ -231,24 +231,24 @@ buffer in real time and in a user friendly way based/inspired on
 
   ┌────
   │ (add-hook 'post-command-hook
-  │ 	  (lambda ()
-  │ 	    "delete colorful overlay on active mark"
-  │ 	    (when-let* (colorful-mode
-  │ 			(beg (use-region-beginning))
-  │ 			(end (use-region-end)))
-  │ 	      ;; Remove full colorful overlay instead only the part where
-  │ 	      ;; the region is.
-  │ 		  (dolist (ov (overlays-in beg end))
-  │ 		    (when (overlay-get ov 'colorful--overlay)
-  │ 		      (delete-overlay ov))))))
+  │           (lambda ()
+  │             "delete colorful overlay on active mark"
+  │             (when-let* (colorful-mode
+  │                         (beg (use-region-beginning))
+  │                         (end (use-region-end)))
+  │               ;; Remove full colorful overlay instead only the part where
+  │               ;; the region is.
+  │                   (dolist (ov (overlays-in beg end))
+  │                     (when (overlay-get ov 'colorful--overlay)
+  │                       (delete-overlay ov))))))
   │ 
   │ (add-hook 'deactivate-mark-hook
-  │ 	  (lambda ()
-  │ 	    "refontify deleted mark"
-  │ 	    (when-let* (colorful-mode
-  │ 			(beg (region-beginning))
-  │ 			(end (region-end)))
-  │ 	      (font-lock-flush beg end))))
+  │           (lambda ()
+  │             "refontify deleted mark"
+  │             (when-let* (colorful-mode
+  │                         (beg (region-beginning))
+  │                         (end (region-end)))
+  │               (font-lock-flush beg end))))
   └────
 
 
