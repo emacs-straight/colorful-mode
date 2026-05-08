@@ -60,168 +60,15 @@
 Changing the background or foreground color will have no effect."
   :group 'colorful)
 
-(defcustom colorful-html-colors-alist
-  '(("black" . "#000000")
-    ("silver" . "#c0c0c0")
-    ("gray" . "#808080")
-    ("white" . "#ffffff")
-    ("maroon" . "#800000")
-    ("red" . "#ff0000")
-    ("purple" . "#800080")
-    ("fuchsia" . "#ff00ff")
-    ("magenta" . "#ff00ff")
-    ("green" . "#008000")
-    ("lime" . "#00ff00")
-    ("olive" . "#808000")
-    ("yellow" . "#ffff00")
-    ("navy" . "#000080")
-    ("blue" . "#0000ff")
-    ("teal" . "#008080")
-    ("aqua" . "#00ffff")
-    ("cyan" . "#00ffff")
-    ("orange" . "#ffa500")
-    ("aliceblue" . "#f0f8ff")
-    ("antiquewhite" . "#faebd7")
-    ("aquamarine" . "#7fffd4")
-    ("azure" . "#f0ffff")
-    ("beige" . "#f5f5dc")
-    ("bisque" . "#ffe4c4")
-    ("blanchedalmond" . "#ffebcd")
-    ("blueviolet" . "#8a2be2")
-    ("brown" . "#a52a2a")
-    ("burlywood" . "#deb887")
-    ("cadetblue" . "#5f9ea0")
-    ("chartreuse" . "#7fff00")
-    ("chocolate" . "#d2691e")
-    ("coral" . "#ff7f50")
-    ("cornflowerblue" . "#6495ed")
-    ("cornsilk" . "#fff8dc")
-    ("crimson" . "#dc143c")
-    ("darkblue" . "#00008b")
-    ("darkcyan" . "#008b8b")
-    ("darkgoldenrod" . "#b8860b")
-    ("darkgray" . "#a9a9a9")
-    ("darkgreen" . "#006400")
-    ("darkgrey" . "#a9a9a9")
-    ("darkkhaki" . "#bdb76b")
-    ("darkmagenta" . "#8b008b")
-    ("darkolivegreen" . "#556b2f")
-    ("darkorange" . "#ff8c00")
-    ("darkorchid" . "#9932cc")
-    ("darkred" . "#8b0000")
-    ("darksalmon" . "#e9967a")
-    ("darkseagreen" . "#8fbc8f")
-    ("darkslateblue" . "#483d8b")
-    ("darkslategray" . "#2f4f4f")
-    ("darkslategrey" . "#2f4f4f")
-    ("darkturquoise" . "#00ced1")
-    ("darkviolet" . "#9400d3")
-    ("deeppink" . "#ff1493")
-    ("deepskyblue" . "#00bfff")
-    ("dimgray" . "#696969")
-    ("dimgrey" . "#696969")
-    ("dodgerblue" . "#1e90ff")
-    ("firebrick" . "#b22222")
-    ("floralwhite" . "#fffaf0")
-    ("forestgreen" . "#228b22")
-    ("gainsboro" . "#dcdcdc")
-    ("ghostwhite" . "#f8f8ff")
-    ("gold" . "#ffd700")
-    ("goldenrod" . "#daa520")
-    ("greenyellow" . "#adff2f")
-    ("grey" . "#808080")
-    ("honeydew" . "#f0fff0")
-    ("hotpink" . "#ff69b4")
-    ("indianred" . "#cd5c5c")
-    ("indigo" . "#4b0082")
-    ("ivory" . "#fffff0")
-    ("khaki" . "#f0e68c")
-    ("lavender" . "#e6e6fa")
-    ("lavenderblush" . "#fff0f5")
-    ("lawngreen" . "#7cfc00")
-    ("lemonchiffon" . "#fffacd")
-    ("lightblue" . "#add8e6")
-    ("lightcoral" . "#f08080")
-    ("lightcyan" . "#e0ffff")
-    ("lightgoldenrodyellow" . "#fafad2")
-    ("lightgray" . "#d3d3d3")
-    ("lightgreen" . "#90ee90")
-    ("lightgrey" . "#d3d3d3")
-    ("lightpink" . "#ffb6c1")
-    ("lightsalmon" . "#ffa07a")
-    ("lightseagreen" . "#20b2aa")
-    ("lightskyblue" . "#87cefa")
-    ("lightslategray" . "#778899")
-    ("lightslategrey" . "#778899")
-    ("lightsteelblue" . "#b0c4de")
-    ("lightyellow" . "#ffffe0")
-    ("limegreen" . "#32cd32")
-    ("linen" . "#faf0e6")
-    ("mediumaquamarine" . "#66cdaa")
-    ("mediumblue" . "#0000cd")
-    ("mediumorchid" . "#ba55d3")
-    ("mediumpurple" . "#9370db")
-    ("mediumseagreen" . "#3cb371")
-    ("mediumslateblue" . "#7b68ee")
-    ("mediumspringgreen" . "#00fa9a")
-    ("mediumturquoise" . "#48d1cc")
-    ("mediumvioletred" . "#c71585")
-    ("midnightblue" . "#191970")
-    ("mintcream" . "#f5fffa")
-    ("mistyrose" . "#ffe4e1")
-    ("moccasin" . "#ffe4b5")
-    ("navajowhite" . "#ffdead")
-    ("oldlace" . "#fdf5e6")
-    ("olivedrab" . "#6b8e23")
-    ("orangered" . "#ff4500")
-    ("orchid" . "#da70d6")
-    ("palegoldenrod" . "#eee8aa")
-    ("palegreen" . "#98fb98")
-    ("paleturquoise" . "#afeeee")
-    ("palevioletred" . "#db7093")
-    ("papayawhip" . "#ffefd5")
-    ("peachpuff" . "#ffdab9")
-    ("peru" . "#cd853f")
-    ("pink" . "#ffc0cb")
-    ("plum" . "#dda0dd")
-    ("powderblue" . "#b0e0e6")
-    ("rosybrown" . "#bc8f8f")
-    ("royalblue" . "#4169e1")
-    ("saddlebrown" . "#8b4513")
-    ("salmon" . "#fa8072")
-    ("sandybrown" . "#f4a460")
-    ("seagreen" . "#2e8b57")
-    ("seashell" . "#fff5ee")
-    ("sienna" . "#a0522d")
-    ("skyblue" . "#87ceeb")
-    ("slateblue" . "#6a5acd")
-    ("slategray" . "#708090")
-    ("slategrey" . "#708090")
-    ("snow" . "#fffafa")
-    ("springgreen" . "#00ff7f")
-    ("steelblue" . "#4682b4")
-    ("tan" . "#d2b48c")
-    ("thistle" . "#d8bfd8")
-    ("tomato" . "#ff6347")
-    ("turquoise" . "#40e0d0")
-    ("violet" . "#ee82ee")
-    ("wheat" . "#f5deb3")
-    ("whitesmoke" . "#f5f5f5")
-    ("yellowgreen" . "#9acd32")
-    ("rebeccapurple" . "#663399"))
-  "Alist of HTML colors.
-Each entry should have the form (COLOR-NAME . HEXADECIMAL-COLOR)."
-  :type 'alist)
-
 (defcustom colorful-extra-color-keyword-functions
   '(colorful-add-hex-colors
-    (emacs-lisp-mode . colorful-add-color-names)
+    (emacs-lisp-mode . colorful-add-emacs-color-names)
     ((html-mode css-mode) .
      (colorful-add-css-variables-colors
       colorful-add-rgb-colors
       colorful-add-hsl-colors
       colorful-add-oklab-oklch-colors
-      colorful-add-color-names))
+      colorful-add-web-color-names))
     (latex-mode . colorful-add-latex-colors))
   "List of functions to add color highlighting to `colorful-color-keywords'.
 It can be a cons cell specifying the mode (or a list of modes),
@@ -238,12 +85,20 @@ Or a simple list of functions for executing wherever colorful is active:
 
 Available functions are:
  - `colorful-add-hex-colors'
- - `colorful-add-color-names'
+ - `colorful-add-emacs-color-names'
+ - `colorful-add-web-color-names'
  - `colorful-add-css-variables-colors'
  - `colorful-add-rgb-colors'
  - `colorful-add-hsl-colors'
  - `colorful-add-oklab-oklch-colors'
- - `colorful-add-latex-colors'"
+ - `colorful-add-latex-colors'
+ - `colorful-add-ansi-shell-colors'
+
+WARNING: The order of the functions specifies the priority they
+should have to be highlighted first, for example, if you enable
+`colorful-add-emacs-color-names' and `colorful-add-web-color-names' in
+the same major mode, depending on which one was called last, it will
+overwrite the highlighting of the previous call."
   :type '(repeat
           (choice (cons (choice :tag "Mode(s)" symbol (repeat symbol))
                         (choice :tag "Function(s)" (repeat function)
@@ -322,10 +177,15 @@ comments, including color names, which can be annoying."
 ;;;; Internal variables
 
 (defvar-local colorful-color-keywords nil
-  "Font-lock colors keyword to highlight.")
+  "List of colors keywords to highlight.")
 
 (defvar-local colorful--highlight nil
   "Internal variable used for check when the highlighting must be done.")
+
+(defvar colorful--conversion-choices
+  '(("Hexadecimal color format" . hex)
+    ("Color name" . color-name))
+  "Alist with all supported conversions formats.")
 
 
 ;;;; Internal Functions
@@ -431,12 +291,13 @@ BEG is the position to check for the overlay."
 
   ;; 1# Case: replace all the colors in an active region.
   (if (and beg end)
-      (let* ((choices '(("Hexadecimal color format" . hex)
-                        ("Color name" . name)))
-             ;; Start prompt.
+      (let* (;; Start prompt.
              (choice (alist-get
-                      (completing-read "Change colors in region: " choices nil t nil nil)
-                      choices nil nil 'equal))
+                      (completing-read "Change colors in region: "
+                                       colorful--conversion-choices
+                                       nil t nil nil)
+                      colorful--conversion-choices
+                      nil nil 'equal))
              ;; Define counters
              (ignored-colors 0)
              (changed-colors 0))
@@ -444,7 +305,8 @@ BEG is the position to check for the overlay."
         (dolist (ov (overlays-in beg end))
           ;; Ensure we are in colorful--overlay
           (when (overlay-get ov 'colorful--overlay)
-            (if-let* ((result (colorful--converter ov choice))
+            (if-let* ((kind (overlay-get ov 'colorful--color-kind))
+                      (result (colorful--converter ov choice kind))
                       ((consp result))
                       (range (cdr result)) ; Get the positions where it should be replaced.
                       (start (car range))
@@ -514,38 +376,29 @@ BEG is the position to check for the overlay."
          ;; If not COLOR string then get it from buffer.
          (color (or color (buffer-substring-no-properties beg end)))
          (prompt (format prompt color))
-         (choices '(("Hexadecimal color format" . hex)
-                    ("Color name" . color-name)))
+         (kind (overlay-get ov 'colorful--color-kind))
          ;; Get choice.
          (choice (alist-get
-                  (completing-read prompt choices nil t nil nil)
-                  choices nil nil 'equal))
-         (converted-color (colorful--converter ov choice)))
+                  (completing-read prompt colorful--conversion-choices
+                                   (lambda (elt) (not (eq (cdr elt) kind)))
+                                   t nil nil)
+                  colorful--conversion-choices nil nil 'equal))
+         (converted-color (colorful--converter ov choice kind)))
 
     (unless converted-color
       (user-error "No color available"))
 
-    ;; If choice is the same type as the color at point
-    ;; run again this function and send a message saying the color
-    ;; is the same type.
-    (if (stringp converted-color)
-        (colorful--prompt-converter ov converted-color beg end color)
+    converted-color))
 
-      converted-color)))
-
-(defun colorful--converter (ov choice)
+(defun colorful--converter (ov choice kind)
   "Convert color from OV to other format.
-Return a list which contains the new color and the positions to replace,
-otherwise return a string for message error.
-
+Return a list which contains the new color and the positions to replace.
+KIND (a symbol) is the kind of color.
 CHOICE is used for get kind of color."
   (let* ((beg (overlay-start ov)) ; Find positions.
          (end (overlay-end ov))
-         (kind (overlay-get ov 'colorful--color-kind))
          (color-value (overlay-get ov 'colorful--color)))
     (pcase choice ; Check and convert color to any of the options:
-      ((pred (eq kind))
-       (format "%s is already a %s. Try again: " color-value kind))
       ('hex ; color to HEX
        (list
         (colorful--short-hex
@@ -613,7 +466,8 @@ and positions to colorize."
                  (nth 3 (syntax-ppss))))
              (eq colorful--highlight t)))
 
-    (let* ((return (funcall function color beg end))
+    (let* ((return (save-match-data
+                     (funcall function color beg end)))
            (color (or (car-safe return) return)))
       (when (and color (color-defined-p color))
         (let ((beg (if (consp return) (nth 1 return) beg))
@@ -653,19 +507,13 @@ and positions to colorize."
            (ignore-case (plist-get el :case))
            (function (plist-get el :function)))
       (goto-char start)
-      (cond
-       ((stringp keywords)
+      (let ((case-fold-search ignore-case))
         (while (re-search-forward keywords end t)
-          (colorful--colorize type (match-string-no-properties match)
-                              (match-beginning match) (match-end match)
-                              function)))
-       (ignore-case
-        (let ((case-fold-search t))
-          (while (re-search-forward keywords end t)
+          ;; Check if it is not already highlighted
+          (unless (colorful--find-overlay (match-beginning match))
             (colorful--colorize type (match-string-no-properties match)
                                 (match-beginning match) (match-end match)
-                                function)))))))
-
+                                function))))))
   `(jit-lock-bounds ,start . ,end))
 
 

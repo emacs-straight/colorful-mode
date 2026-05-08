@@ -147,15 +147,20 @@ buffer in real time and in a user friendly way based/inspired on
   colorful provides extra functions out-the-box that enable additional
   highlighting:
 
-  • `colorful-add-hex-colors': Add Hexadecimal colors highlighting.
-  • `colorful-add-color-names': Add color names highlighting.
-  • `colorful-add-css-variables-colors': Add CSS user-defined color
-    variables highlighting.
-  • `colorful-add-rgb-colors': Add CSS RGB colors highlighting.
-  • `colorful-add-oklab-oklch-colors': Add CSS OkLab and OkLch colors
+  • `colorful-add-hex-colors': Enable Hexadecimal colors highlighting.
+  • `colorful-add-emacs-color-names': Enable Emacs specific color names
+    highlighting. (Useful for theme creators)
+  • `colorful-add-web-color-names': Enable CSS/HTML color names
     highlighting.
-  • `colorful-add-hsl-colors': Add CSS HSL colors highlighting.
-  • `colorful-add-latex-colors': Add LaTeX rgb/RGB/HTML/Grey colors
+  • `colorful-add-css-variables-colors': Enable CSS user-defined color
+    variables highlighting.
+  • `colorful-add-rgb-colors': Enable CSS RGB colors highlighting.
+  • `colorful-add-oklab-oklch-colors': Enable CSS OkLab and OkLch colors
+    highlighting.
+  • `colorful-add-hsl-colors': Enable CSS HSL colors highlighting.
+  • `colorful-add-latex-colors': Enable LaTeX rgb/RGB/HTML/Grey colors
+    highlighting.
+  • `colorful-add-ansi-shell-colors': Enable ANSI shell color
     highlighting.
 
   (See: `colorful-extra-color-keyword-functions' for more details.)
