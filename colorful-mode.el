@@ -178,10 +178,35 @@ comments, including color names, which can be annoying."
 (defvar-local colorful--highlight nil
   "Internal variable used for check when the highlighting must be done.")
 
-(defvar colorful--conversion-choices
+(defvar colorful--conversion-choices-prompt
   '(("Hexadecimal color format" . hex)
-    ("Color name" . color-name))
-  "Alist with all supported conversions formats.")
+    ("Color name" . color-name)
+    ("CSS RGB" . css-rgb)
+    ("CSS HSL" . css-hsl))
+  "Alist of supported conversions formats for prompt.")
+
+(defvar colorful--conversion-functions
+  `((hex . ,(lambda (color kind)
+              (colorful--short-hex
+               (if (eq kind 'color-name)
+                   (colorful--name-to-hex color)
+                 color))))
+    (color-name . ,(lambda (color _kind)
+                     (colorful--hex-to-name color)))
+    (css-rgb . ,(lambda (color _kind)
+                  (seq-let (r g b)
+                      (mapcar (lambda (x) (round (* x 255)))
+                              (color-name-to-rgb color))
+                    (format "rgb(%d, %d, %d)" r g b))))
+    (css-hsl . ,(lambda (color _kind)
+                  (seq-let (r g b)
+                      (apply #'color-rgb-to-hsl (color-name-to-rgb color))
+                    (format "hsl(%d, %d%%, %d%%)"
+                            (* r 360) (* g 100) (* b 100))))))
+  "Alist of functions for colors conversion by kind.
+Each function in this alist is called with 2 arguments:
+COLOR - the color string (in hex/name format) to convert.
+KIND - the kind of color (a symbol) of the original color.")
 
 
 ;;;; Internal Functions
@@ -206,26 +231,23 @@ The conversion is controlled by `colorful-short-hex-conversions'.  If
 `colorful-short-hex-conversions' is set to nil, then just return HEX."
   (if (and colorful-short-hex-conversions
            (length> hex 7))
-      (let ((r (substring hex 1 5))
-            (g (substring hex 5 9))
-            (b (substring hex 9 13)))
-        (format "#%02x%02x%02x"
-                (/ (string-to-number r 16) 256)
-                (/ (string-to-number g 16) 256)
-                (/ (string-to-number b 16) 256)))
+      (apply #'format "#%02x%02x%02x"
+             (mapcar
+              (lambda (s) (/ (string-to-number s 16) 256))
+              (seq-split (substring hex 1) 4)))
     hex))
 
 (defun colorful--hsl-to-hex (h s l)
   "Return CSS H S L as hexadecimal format."
-  (if-let* ((h (cond
-                ((string-suffix-p "grad" h)
-                 (/ (string-to-number h) 400.0))
-                ((string-suffix-p "rad" h)
-                 (/ (string-to-number h) (* 2 float-pi)))
-                (t (/ (string-to-number h) 360.0))))
-            (s (/ (string-to-number s) 100.0))
-            (l (/ (string-to-number l) 100.0)))
-      (apply #'color-rgb-to-hex (color-hsl-to-rgb h s l))))
+  (when-let* ((h (cond
+                  ((string-suffix-p "grad" h)
+                   (/ (string-to-number h) 400.0))
+                  ((string-suffix-p "rad" h)
+                   (/ (string-to-number h) (* 2 float-pi)))
+                  (t (/ (string-to-number h) 360.0))))
+              (s (/ (string-to-number s) 100.0))
+              (l (/ (string-to-number l) 100.0)))
+    (apply #'color-rgb-to-hex (color-hsl-to-rgb h s l))))
 
 (defun colorful--oklab-to-hex (l a b)
   "Convert OKLab color (L, A, B) to HEX format.
@@ -271,8 +293,8 @@ L C and H must be strings."
 (defun colorful--find-overlay (&optional beg)
   "Return colorful overlay if found at current point.
 BEG is the position to check for the overlay."
-  (any (lambda (ov) (overlay-get ov 'colorful--overlay))
-       (overlays-at (or beg (point)))))
+  (car (any (lambda (ov) (overlay-get ov 'colorful--overlay))
+            (overlays-at (or beg (point))))))
 
 
 ;;;; User Interactive Functions
@@ -281,17 +303,17 @@ BEG is the position to check for the overlay."
   "Convert color at point or colors in region to another format."
   (interactive
    (progn (barf-if-buffer-read-only)
-          (if (use-region-p)
-              (list (region-beginning) (region-end)))))
+          (when (use-region-p)
+            (list (region-beginning) (region-end)))))
 
   ;; 1# Case: replace all the colors in an active region.
   (if (and beg end)
       (let* (;; Start prompt.
              (choice (alist-get
                       (completing-read "Change colors in region: "
-                                       colorful--conversion-choices
+                                       colorful--conversion-choices-prompt
                                        nil t nil nil)
-                      colorful--conversion-choices
+                      colorful--conversion-choices-prompt
                       nil nil 'equal))
              ;; Define counters
              (ignored-colors 0)
@@ -337,12 +359,13 @@ BEG is the position to check for the overlay."
   "Convert color at point to another format and copy it to the kill ring."
   (interactive)
   (if-let* ((colorful-ov (colorful--find-overlay)) ; Find colorful overlay tag at point/cursor.
+            (color (overlay-get colorful-ov 'colorful--color))
             ;; Start prompt for color change and get new color.
             (result (car (colorful--prompt-converter colorful-ov "Copy '%s' as: ")))
             ;; Propertize text for message.
             (color (propertize result 'face `(:foreground
-                                              ,(readable-foreground-color result)
-                                              :background ,result))))
+                                              ,(readable-foreground-color color)
+                                              :background ,color))))
       ;; Copy color and notify to user it's done
       (progn (kill-new color)
              (message "`%s' copied." color))
@@ -374,10 +397,10 @@ BEG is the position to check for the overlay."
          (kind (overlay-get ov 'colorful--color-kind))
          ;; Get choice.
          (choice (alist-get
-                  (completing-read prompt colorful--conversion-choices
+                  (completing-read prompt colorful--conversion-choices-prompt
                                    (lambda (elt) (not (eq (cdr elt) kind)))
                                    t nil nil)
-                  colorful--conversion-choices nil nil 'equal))
+                  colorful--conversion-choices-prompt nil nil 'equal))
          (converted-color (colorful--converter ov choice kind)))
 
     (unless converted-color
@@ -388,22 +411,16 @@ BEG is the position to check for the overlay."
 (defun colorful--converter (ov choice kind)
   "Convert color from OV to other format.
 Return a list which contains the new color and the positions to replace.
-KIND (a symbol) is the kind of color.
-CHOICE is used for get kind of color."
+KIND (a symbol) is the kind of color in the overlay.
+CHOICE is used to get kind of color from the user."
   (let* ((beg (overlay-start ov)) ; Find positions.
          (end (overlay-end ov))
          (color-value (overlay-get ov 'colorful--color)))
-    (pcase choice ; Check and convert color to any of the options:
-      ('hex ; color to HEX
-       (list
-        (colorful--short-hex
-         (if (eq kind 'color-name)
-             (colorful--name-to-hex color-value)
-           color-value))
-        beg end))
-      ('color-name ; color to NAME
-       (if-let* ((color (colorful--hex-to-name color-value)))
-           (list color beg end))))))
+    (when-let* ((result
+                 (funcall
+                  (alist-get choice colorful--conversion-functions)
+                  color-value kind)))
+      (list result beg end))))
 
 (defun colorful--colorize-match (color beg end kind face map)
   "Overlay match with a face from BEG to END.
